@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Traktor</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/x-icon" href="/js/favicon.ico">
+  <script src='/js/waxjs.js'></script>
+  <script src="/js/tasktimer.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity=
+        "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" 
+        crossorigin="anonymous">
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-5-strong">
+    <ul class="nav navbar-nav nav-flex ml-auto">
+      <li class="nav-item" style="display: none;"></li>
+      <li class="nav-item"><span id="waxusd" style="background-color: green; color: honeydew;"></span></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <h1>Traktor</h1>
+    <button id="login" onclick=login() >WAX Login</button>
+    <div class="row d-inline-flex">
+      <label hidden>updater:</label><input id="updater" hidden>&nbsp;<input id="lineToken" placeholder="LINE TOKEN HERE" hidden>
+      &nbsp;<button class="btn btn-warning btn-sm" type="button" onclick=lineNotifyTest() hidden>TEST LINE NOTIFY</button><t></t> 
+    </div>
+    <!-- <label>message:</label> -->
+    <input id="message" style="display:none;"><br><br>
+    <!-- <label>fail:</label> -->
+    <input type="checkbox" id="fail" value="fail" style="display:none;"><t>
+    <button id="sign" onclick=sign() hidden>Sign transaction</button><br><br>
+    <h5 id="usage"></h5>
+    <!-- <label>Current Message</label> -->
+    <h3 id="current" style="display:none;"></h3><br>
+    <label>FarmersWorld</label>    <input type="checkbox" id="fwCheck" checked="true"> </input>    <label id="fwBalance"></label>
+    <!-- <br>DEPOSIT GOLD <input id="xx" placeholder="432.1234"> <button type="button" class="btn btn-outline-primary btn-sm" onclick=fwDepositFWG() id="fwDepositFWGButton">Deposit</button> -->
+    <!-- <br>DEPOSIT FOOD <input id="fwDepositFWF" placeholder="432.1234"> <button type="button" class="btn btn-outline-primary btn-sm" onclick=fwDepositFWF() id="fwDepositFWFButton">Deposit</button><br><br> -->
+    <div class="input-group mb-0" style="display: flex; align-items: center;">
+      <div class="col-2"><span class="align-middle">DEPOSIT GOLD</span></div>
+      <div class="col-3">
+        <input id="fwDepositFWG" type="text" class="form-control" placeholder="321.1234" aria-label="321.1234" aria-describedby="basic-addon2">
+      </div>
+      <div class="col-3">  
+        <button class="btn btn-warning" type="button" onclick=fwDepositFWG() id="fwDepositFWGButton">DEPOSIT</button>
+      </div>
+    </div>
+    <div class="input-group mb-0" style="display: flex; align-items: center;">
+      <div class="col-2"><span class="align-middle">DEPOSIT FOOD</span></div>
+      <div class="col-3">
+        <input id="fwDepositFWF" type="text" class="form-control" placeholder="321.1234" aria-label="321.1234" aria-describedby="basic-addon2">
+      </div>
+      <div class="col-3">  
+        <button class="btn btn-primary" type="button" onclick=fwDepositFWF() id="fwDepositFWFButton">DEPOSIT</button>
+      </div>
+    </div>
+    <br>
+    <h5 id="resFarmersworld"></h5>
+    <input type="hidden" id="pandaCheck" checked="true"></input>    <label type="hidden" id="pandaBalance"></label>
+    <br><select id = "pandaFoodUnit" hidden></select> <select id = "pandaFoodList"hidden></select>  <button type="button" class="btn btn-outline-primary btn-sm" onclick=pandaBuyFood() id="pandaBuyFoodButton" hidden>Buy</button>
+    <h5 id="resnftPanda"></h5>
+    
+    <h5 id="response"hidden></h5>
+</div>
+<button type="button" class="regular" name="edit" id="submit" style="display:none;"></button>
+<script src="js/transact.js"></script>
+</body>
+</html>
