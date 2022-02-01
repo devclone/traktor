@@ -37,19 +37,19 @@
     <h5 id="usage"></h5>
     <!-- <label>Current Message</label> -->
     <h3 id="current" style="display:none;"></h3><br>
-    <label>FarmersWorld</label>    <input type="checkbox" id="fwCheck" checked="true"> </input>    <label id="fwBalance"></label>
+    <label hidden>FarmersWorld</label>    <input type="checkbox" id="fwCheck" checked="true"hidden> </input>    <label id="fwBalance" hidden></label>
     <!-- <br>DEPOSIT GOLD <input id="xx" placeholder="432.1234"> <button type="button" class="btn btn-outline-primary btn-sm" onclick=fwDepositFWG() id="fwDepositFWGButton">Deposit</button> -->
     <!-- <br>DEPOSIT FOOD <input id="fwDepositFWF" placeholder="432.1234"> <button type="button" class="btn btn-outline-primary btn-sm" onclick=fwDepositFWF() id="fwDepositFWFButton">Deposit</button><br><br> -->
     <div class="input-group mb-0" style="display: flex; align-items: center;">
-      <div class="col-2"><span class="align-middle">DEPOSIT GOLD</span></div>
-      <div class="col-3">
-        <input id="fwDepositFWG" type="text" class="form-control" placeholder="321.1234" aria-label="321.1234" aria-describedby="basic-addon2">
+      <div class="col-2"hidden><span class="align-middle">DEPOSIT GOLD</span></div>
+      <div class="col-3"hidden>
+        <input id="fwDepositFWG" hidden type="text" hidden class="form-control" placeholder="321.1234" aria-label="321.1234" aria-describedby="basic-addon2">
       </div>
       <div class="col-3">  
-        <button class="btn btn-warning" type="button" onclick=fwDepositFWG() id="fwDepositFWGButton">DEPOSIT</button>
+        <button class="btn btn-warning" type="button" onclick=fwDepositFWG() id="fwDepositFWGButton" hidden>DEPOSIT</button>
       </div>
     </div>
-    <div class="input-group mb-0" style="display: flex; align-items: center;">
+    <div class="input-group mb-0" hidden style="display: flex; align-items: center;">
       <div class="col-2"><span class="align-middle">DEPOSIT FOOD</span></div>
       <div class="col-3">
         <input id="fwDepositFWF" type="text" class="form-control" placeholder="321.1234" aria-label="321.1234" aria-describedby="basic-addon2">

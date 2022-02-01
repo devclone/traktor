@@ -17,15 +17,19 @@ app.use(express.static(__dirname + '/../sites/landingPage/public'));
 app.use('/', require('../sites'));
 
 app.listen(9901, ()=>{
-	const { app, BrowserWindow } = require('electron');
+	const { globalShortcut, app, BrowserWindow } = require('electron');
 
 	function createWindow () {
 		const win = new BrowserWindow({
 			width: 1200,
 			height: 600,
 		});
-		//win.webContents.openDevTools();
-	
+		
+		var reload = ()=>{
+			win.reload();
+		};
+		globalShortcut.register('F5', reload);
+		globalShortcut.register('CommandOrControl+R', reload);
 		win.loadURL('http://localhost:9901/');
 	}
 	

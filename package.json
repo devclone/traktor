@@ -6,7 +6,6 @@
   "scripts": {
     "start": "electron src/core/main.js",
     "dev": "electronmon src/core/main.js ",
-    "compile": "electron-builder --dir",
     "dist": "electron-builder -wlm"
   },
   "repository": {
@@ -29,11 +28,11 @@
     }
   }, 
   "build": {
-    "appId": "app-name",
+    "appId": "traktor",
     "directories": {
       "buildResources": "build"
-  }
-    
+  },
+    "icon": "icon.png"
   },
   "dependencies": {
     "axios": "^0.25.0",
