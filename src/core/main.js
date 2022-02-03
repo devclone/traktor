@@ -31,6 +31,8 @@ app.listen(9901, ()=>{
 		globalShortcut.register('F5', reload);
 		globalShortcut.register('CommandOrControl+R', reload);
 		win.loadURL('http://localhost:9901/');
+		win.webContents.openDevTools();
+
 	}
 	
 	app.whenReady().then(() => {

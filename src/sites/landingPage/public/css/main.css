@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap");
+body {
+  font-family: "Roboto", "Helvetica Neue";
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #ceeee5;
+}
+
+#tracgif {
+  background-image: url("http://localhost:9901/img/tractor.gif");
+  background-repeat: no-repeat;
+  height: 350px;
+  position: absolute;
+  top: 5vh;
+  right: 0;
+  width: 400px;
+}
+
+.container {
+  margin: 6vh;
+  margin-left: 6vh;
+}
+
+/*# sourceMappingURL=main.css.map */
