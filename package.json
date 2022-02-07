@@ -1,12 +1,12 @@
 {
   "name": "traktor",
-  "version": "0.0.1-beta",
+  "version": "0.1.7-beta",
   "description": "Farmers World bot",
   "main": "src/core/main.js",
   "scripts": {
-    "start": "electron src/core/main.js",
+    "start": "electron --trace-warnings src/core/main.js",
     "dev": "electronmon src/core/main.js ",
-    "dist": "electron-builder -wlm",
+    "dist": "electron-builder -w",
     "scss": "sass --watch src/sites/landingPage/scss:src/sites/landingPage/public/css/"
   },
   "repository": {
@@ -33,16 +33,20 @@
     "directories": {
       "buildResources": "build"
     },
-    "icon": "icon.svg"
+    "icon": "icon.png"
   },
   "dependencies": {
     "axios": "^0.25.0",
     "body-parser": "^1.19.1",
     "cors": "^2.8.5",
+    "detect-port": "^1.3.0",
     "ejs": "^3.1.6",
     "electron-webpack": "^2.8.2",
     "express": "^4.17.2",
+    "hostile": "^1.3.3",
     "node-sass": "^7.0.1",
+    "open": "^8.4.0",
+    "puppeteer": "^13.1.3",
     "sass": "^1.49.7",
     "scss": "^0.2.4"
   },

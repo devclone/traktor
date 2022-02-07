@@ -1,11 +1,10 @@
 /* eslint-disable no-undef */
 const wax = new waxjs.WaxJS({
 	rpcEndpoint: 'https://api.wax.alohaeos.com/', 
-	tryAutoLogin: true,
+	tryAutoLogin: false,
 	waxSigningURL: 'https://all-access.wax.io',
 	waxAutoSigningURL: 'https://api-idm.wax.io/v1/accounts/auto-accept/'
 });
-
 // --------------- ASK DB Start ------------------------
 async function askDB(code, tableName, bound, limit=1){
 	result = await wax.api.rpc.get_table_rows({
@@ -79,9 +78,10 @@ function fromSec(timeInSeconds) {
 
 async function login(){
 	try {
-		return await wax.login();
+		await wax.login();
+	
 	}catch(e){
-		/*Nothing*/
+		console.log(err);
 	}
 }
 
@@ -100,26 +100,83 @@ async function runner(config){
 	}	
 }
 
-// ----------  WORKER START ------------
-async function getPlots(){
-//	const plots = await getTableRows_byIndex('farmersworld', 'crops', wax.userAccount, '2', 'name');
-
- 
-	// name  mbsclaim
-	/*Nothing FOR NOW*/
+async function refillEnergy(balance, element){
+	let recover = balance.max_energy - balance.energy;
+	let config2 = {
+		actions: [{
+			account: 'farmersworld',
+			name: 'recover',
+			authorization: [{
+				actor: wax.userAccount,
+				permission: 'active',
+			}],
+			data: {
+				owner: wax.userAccount,
+				energy_recovered: recover
+			},
+		}]
+	};
+	let refillEnergy = await runner(config2);
+	if (refillEnergy == true){
+		console.log(`Id ${ element.asset_id}, ENERGY RECOVERD`);
+	}
+	else{
+		document.getElementById('error').innerHTML =`Id ${ element.asset_id}, ERROR RECOVER ENERGY ${refillEnergy}`; 
+	}
 }
 
 
-async function getMember(memberConf){
+
+// ----------  WORKER START ------------
+async function getPlots(cropconf){
+	const crops = await askDB_byId('farmersworld', 'crops', wax.userAccount, '2', 'name');
+	let customHTML = '';
+	crops.forEach(async (element, index) => {
+		const cropName = cropconf.rows.find(elem => elem.template_id === element.template_id);
+		customHTML += `<div>
+			<div>${cropName.name}</div>
+			<div>${element.times_claimed}/42</div>
+			<div>${sec2time(element.next_availability - Date.now()/1000)}</div>
+		</div>`;
+
+		if (element.next_availability - Date.now()/1000 < 0){
+			let config = {
+				actions: [{
+					account: 'farmersworld',
+					name: 'cropclaim',
+					authorization: [{
+						actor: wax.userAccount,
+						permission: 'active',
+					}],
+					data: {
+						owner: wax.userAccount,
+						crop_id: element.asset_id
+					},
+				}]
+			};
+			let plots = await runner(config);
+			if (ret == true){
+				console.log('CROP WORKED');
+			}
+			else{
+				document.getElementById('error').innerHTML = `Id ${ element.asset_id}, HARVEST FAILED! ${plots}`;
+			}
+			await refillEnergy(resources, element);
+		}
+	});
+	document.getElementById('plots').innerHTML = customHTML;
+}
+
+
+async function getMember(memberConf, resources){
 	const member = await askDB_byId('farmersworld', 'mbs', wax.userAccount, '2', 'name');
 
-	let	customHTML = '<h3> Member </h3>';
+	let	customHTML = '';
 	member.forEach(async element =>{
 		const memberName = memberConf.rows.find(e => e.template_id === element.template_id);
-		
+		console.log(memberName);
 		customHTML += `
-					<div${memberName.type};">${member.template_name}</div>;
-					<div>${element.current_durability}/${element.durability}</div>
+					<div>${memberName.template_name}</div>;
 					<div>${fromSec(element.next_availability - Date.now()/1000)}</div>
 				</div><br>`;
     
@@ -145,6 +202,9 @@ async function getMember(memberConf){
 			else{
 				console.log(`Id ${ element.asset_id}, PROBLEM HARVEST ${claimMember}`); 
 			}
+
+			await refillEnergy(resources, element);
+
 		}
 	});
 	document.getElementById('member').innerHTML = customHTML;
@@ -161,67 +221,67 @@ async function getTools(toolconf, gold, resources){
 		const toolName = toolconf.rows.find(elem => elem.template_id === element.template_id);
 		console.log(toolName.durability_consumed);
 		customHTML += `
-					<div><b>${toolName.template_name}</b></div>
+					<div style="w"><b>${toolName.template_name}</b></div>
 					<div>${element.current_durability}/${element.durability}</div>
 					<div>${fromSec(element.next_availability - Date.now()/1000)}</div>
 				</div><br>`;
 		document.getElementById('tools').innerHTML = customHTML;
-		if(toolName.energy_consumed > resources.energy) {
-			if (element.next_availability - Date.now()/1000 < 0){
-				if(element.current_durability > toolName.durability_consumed){
-					let config = {
+		if (element.next_availability - Date.now()/1000 < 0){
+			if(element.current_durability > toolName.durability_consumed){
+				let config = {
+					actions: [{
+						account: 'farmersworld',
+						name: 'claim',
+						authorization: [{
+							actor: wax.userAccount,
+							permission: 'active',
+						}],
+						data: {
+							owner: wax.userAccount,
+							asset_id: element.asset_id
+						},
+					}]
+				};
+				let harvest = await runner(config);
+				if (harvest == true){
+					console.log(`Id ${ element.asset_id}, HARVEST WORKED`);
+				}
+				else{ console.log(`Id ${ element.asset_id}, ERROR HARVEST ${harvest}`); }
+			}else{ 
+				// REPAIR THE TOOL
+				let needGold = (element.durability - element.current_durability) / 5;
+				if(needGold > gold){
+					customHTML2 += `
+          <div> PROBLEM NEED MORE : ${gold}</div>
+          `;
+					document.getElementById('tools').innerHTML = customHTML2;
+				}else{
+					let conf = {
 						actions: [{
 							account: 'farmersworld',
-							name: 'claim',
+							name: 'repair',
 							authorization: [{
 								actor: wax.userAccount,
 								permission: 'active',
 							}],
 							data: {
-								owner: wax.userAccount,
+								asset_owner: wax.userAccount,
 								asset_id: element.asset_id
 							},
 						}]
 					};
-					let harvest = await runner(config);
-					if (harvest == true){
-						console.log(`Id ${ element.asset_id}, HARVEST WORKED`);
+					let repair = await runner(conf);
+					if (repair == true){
+						console.log(`Id ${ element.asset_id}, REPAIR WORKED`);
 					}
-					else{ console.log(`Id ${ element.asset_id}, ERROR HARVEST ${harvest}`); }
-				}else{ 
-				// REPAIR THE TOOL
-					let needGold = (element.durability - element.current_durability) / 5;
-					if(needGold > gold){
-						customHTML2 += `
-          <div> PROBLEM NEED MORE : ${gold}</div>
-          `;
-						document.getElementById('tools').innerHTML = customHTML2;
-					}else{
-						let conf = {
-							actions: [{
-								account: 'farmersworld',
-								name: 'repair',
-								authorization: [{
-									actor: wax.userAccount,
-									permission: 'active',
-								}],
-								data: {
-									asset_owner: wax.userAccount,
-									asset_id: element.asset_id
-								},
-							}]
-						};
-						let repair = await runner(conf);
-						if (repair == true){
-							console.log(`Id ${ element.asset_id}, REPAIR WORKED`);
-						}
-						else{ console.log(`Id ${ element.asset_id}, ERROR REPAIR ${harvest}`); }
+					else{ 
+						document.getElementById('error').innerHTML = `Id ${ element.asset_id}, ERROR REPAIR ${harvest}`; 
 					}
 				}
 			}
-		}else{ 
-			// Refill Energy !!!!!!!!!
+			await refillEnergy(resources, element);
 		}
+
 	});
 	return customHTML;
 }
@@ -233,7 +293,6 @@ async function farmersWorld(toolConf, plotsConf, memberConf){
 	const resources = await askDB('farmersworld', 'accounts', wax.userAccount);
 
 	let gold;
-	let wood;
 	let food;
 	resources.balances.forEach((i)=>{
 		i.includes('GOLD') ? gold = i.split(' ')[0] : gold = 0;
@@ -242,23 +301,26 @@ async function farmersWorld(toolConf, plotsConf, memberConf){
 	});
 
 	let customHTML = '';
-	customHTML += `<h4>Wood: ${wood} Gold: ${gold} Food: ${food} Energy: ${resources.energy}</h4>`;
+	customHTML += `<h4>Wood: ${resources.balances[0]} Gold: ${resources.balances[1]} Food: ${food} Energy: ${resources.energy}</h4>`;
  
 	document.getElementById('main').innerHTML = customHTML;
 
 	document.getElementById('tools').innerHTML = await getTools(toolConf, gold, resources);
-	await getMember(memberConf);
+	await getMember(memberConf, resources);
+	await getPlots(plotsConf, resources);
 }
 
 
 // run
 async function _run(){
-	const user = await login();
-	let toolConf = await askDB_all('farmersworld', 'toolconfs', 100);
-	let	plotsConf = await askDB_all('farmersworld', 'cropconf', 100);
-	let	memberConf = await askDB_all('farmersworld', 'mbsconf', 100);
-	await farmersWorld(toolConf, plotsConf, memberConf);
+	await login();
+	for(;;){
+		let toolConf = await askDB_all('farmersworld', 'toolconfs', 100);
+		let	plotsConf = await askDB_all('farmersworld', 'cropconf', 100);
+		let	memberConf = await askDB_all('farmersworld', 'mbsconf', 100);
+		await farmersWorld(toolConf, plotsConf, memberConf);
+		await new Promise(resolve => setTimeout(resolve, 10000));
+	}
 }
-
 
 _run();

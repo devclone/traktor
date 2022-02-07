@@ -3,7 +3,8 @@ body {
   font-family: "Roboto", "Helvetica Neue";
   background-repeat: no-repeat;
   background-size: cover;
-  background-color: #ceeee5;
+  background-color: #2b3e51;
+  color: white;
 }
 
 #tracgif {
@@ -19,6 +20,38 @@ body {
 .container {
   margin: 6vh;
   margin-left: 6vh;
+  display: flex;
+}
+
+#error {
+  margin: 6vh;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+}
+
+#tools {
+  border: 2px solid #474f52;
+  padding: 2vh;
+  margin: 2vh;
+  flex-wrap: wrap;
+  background-color: #474f52;
+}
+
+#member {
+  border: 2px solid #474f52;
+  padding: 2vh;
+  margin: 2vh;
+  flex-wrap: wrap;
+  background-color: #474f52;
+}
+
+#plots {
+  border: 2px solid #474f52;
+  padding: 2vh;
+  margin: 2vh;
+  flex-wrap: wrap;
+  background-color: #474f52;
 }
 
 /*# sourceMappingURL=main.css.map */
