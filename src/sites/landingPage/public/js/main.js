@@ -133,7 +133,7 @@ async function getPlots(cropconf, resources){
 	let customHTML = '';
 	crops.forEach(async (element, index) => {
 		console.log(element);
-		const cropName = cropconf.rows.find(elem => elem.template_id === element.template_id);
+		const cropName = await cropconf.rows.find(elem => elem.template_id === element.template_id);
 		customHTML += `<div>
 			<div>${cropName.name}</div>
 			<div>${element.times_claimed}/42</div>
@@ -155,6 +155,7 @@ async function getPlots(cropconf, resources){
 					},
 				}]
 			};
+			await new Promise(resolve => setTimeout(resolve, 5000));
 			let plots = await runner(config);
 			if (ret == true){
 				console.log('CROP WORKED');
@@ -162,6 +163,7 @@ async function getPlots(cropconf, resources){
 			else{
 				document.getElementById('error').innerHTML = `Id ${ element.asset_id}, HARVEST FAILED! ${plots}`;
 			}
+			await new Promise(resolve => setTimeout(resolve, 5000));
 			await refillEnergy(resources, element);
 		}
 	});
@@ -195,6 +197,7 @@ async function getMember(memberConf, resources){
 					},
 				}]
 			};
+			await new Promise(resolve => setTimeout(resolve, 5000));
 			let claimMember = runnner(conf);
 			if(claimMember == true){
 				console.log(`Id ${ element.asset_id}, HARVEST WORKED`);
@@ -203,6 +206,7 @@ async function getMember(memberConf, resources){
 				console.log(`Id ${ element.asset_id}, PROBLEM HARVEST ${claimMember}`); 
 			}
 
+			await new Promise(resolve => setTimeout(resolve, 5000));
 			await refillEnergy(resources, element);
 
 		}
@@ -269,6 +273,7 @@ async function getTools(toolconf, gold, resources){
 							},
 						}]
 					};
+					await new Promise(resolve => setTimeout(resolve, 5000));
 					let repair = await runner(conf);
 					if (repair == true){
 						console.log(`Id ${ element.asset_id}, REPAIR WORKED`);
@@ -278,6 +283,7 @@ async function getTools(toolconf, gold, resources){
 					}
 				}
 			}
+			await new Promise(resolve => setTimeout(resolve, 5000));
 			await refillEnergy(resources, element);
 		}
 
@@ -291,11 +297,10 @@ async function farmersWorld(toolConf, plotsConf, memberConf){
 	// Get current Data
 	const resources = await askDB('farmersworld', 'accounts', wax.userAccount);
 
+	await new Promise(resolve => setTimeout(resolve, 5000));
 	let gold;
 	let food;
-	resources.balances.forEach((i)=>{
-		i.includes('GOLD') ? gold = i.split(' ')[0] : gold = 0;
-		i.includes('WOOD') ? wood = i.split(' ')[0] : wood = 0;
+	resources.balances.forEach((i)=>{	
 		i.includes('FOOD') ? food = i.split(' ')[0] : food = 0;
 	});
 
@@ -306,6 +311,7 @@ async function farmersWorld(toolConf, plotsConf, memberConf){
 
 	document.getElementById('tools').innerHTML = await getTools(toolConf, gold, resources);
 	await getMember(memberConf, resources);
+	await new Promise(resolve => setTimeout(resolve, 5000));
 	await getPlots(plotsConf, resources);
 }
 
@@ -313,10 +319,10 @@ async function farmersWorld(toolConf, plotsConf, memberConf){
 // run
 async function _run(){
 	await login();
+	let toolConf = await askDB_all('farmersworld', 'toolconfs', 100);
+	let	plotsConf = await askDB_all('farmersworld', 'cropconf', 100);
+	let	memberConf = await askDB_all('farmersworld', 'mbsconf', 100);
 	for(;;){
-		let toolConf = await askDB_all('farmersworld', 'toolconfs', 100);
-		let	plotsConf = await askDB_all('farmersworld', 'cropconf', 100);
-		let	memberConf = await askDB_all('farmersworld', 'mbsconf', 100);
 		await farmersWorld(toolConf, plotsConf, memberConf);
 		await new Promise(resolve => setTimeout(resolve, 10000));
 	}
