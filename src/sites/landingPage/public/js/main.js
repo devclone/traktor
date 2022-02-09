@@ -128,9 +128,10 @@ async function refillEnergy(balance, element){
 
 
 // ----------  WORKER START ------------
-async function getPlots(cropconf){
+async function getPlots(cropconf, resources){
 	const crops = await askDB_byId('farmersworld', 'crops', wax.userAccount, '2', 'name');
 	let customHTML = '';
+	console.log(crops);
 	crops.forEach(async (element, index) => {
 		const cropName = await cropconf.rows.find(elem => elem.template_id === element.template_id);
 		customHTML += `<div>
