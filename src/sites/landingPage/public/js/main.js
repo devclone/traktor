@@ -136,7 +136,7 @@ async function getPlots(cropconf){
 		customHTML += `<div>
 			<div>${cropName.name}</div>
 			<div>${element.times_claimed}/42</div>
-			<div>${sec2time(element.next_availability - Date.now()/1000)}</div>
+			<div>${fromSec(element.next_availability - Date.now()/1000)}</div>
 		</div>`;
 
 		if (element.next_availability - Date.now()/1000 < 0){
@@ -176,7 +176,7 @@ async function getMember(memberConf, resources){
 		const memberName = memberConf.rows.find(e => e.template_id === element.template_id);
 		console.log(memberName);
 		customHTML += `
-					<div>${memberName.name}</div>;
+					<div>${memberName.name}</div>
 					<div>${fromSec(element.next_availability - Date.now()/1000)}</div>
 				</div><br>`;
     
