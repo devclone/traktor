@@ -173,7 +173,8 @@ async function getMember(memberConf, resources){
 
 	let	customHTML = '';
 	member.forEach(async element =>{
-		const memberName = await memberConf.rows.find(e => e.template_id === element.template_id);
+		const memberName = memberConf.rows.find(e => e.template_id === element.template_id);
+		console.log(memberName);
 		customHTML += `
 					<div>${memberName.name}</div>;
 					<div>${fromSec(element.next_availability - Date.now()/1000)}</div>
@@ -194,7 +195,7 @@ async function getMember(memberConf, resources){
 					},
 				}]
 			};
-			let claimMember = runner(conf);
+			let claimMember = runnner(conf);
 			if(claimMember == true){
 				console.log(`Id ${ element.asset_id}, HARVEST WORKED`);
 			}
@@ -207,10 +208,10 @@ async function getMember(memberConf, resources){
 		}
 	});
 	document.getElementById('member').innerHTML = customHTML;
+
 }
 
 async function getTools(toolconf, gold, resources){
-	console.log(toolconf);
 	let customHTML = '';
 	const tools = await askDB_byId('farmersworld', 'tools', wax.userAccount, '2', 'name');
 	tools.sort(function(a, b) {
