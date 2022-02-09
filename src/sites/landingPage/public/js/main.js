@@ -173,7 +173,7 @@ async function getMember(memberConf, resources){
 
 	let	customHTML = '';
 	member.forEach(async element =>{
-		const memberName = memberConf.rows.find(e => e.template_id === element.template_id);
+		const memberName = await memberConf.rows.find(e => e.template_id === element.template_id);
 		console.log(memberName);
 		customHTML += `
 					<div>${memberName.template_name}</div>;
@@ -195,7 +195,7 @@ async function getMember(memberConf, resources){
 					},
 				}]
 			};
-			let claimMember = runnner(conf);
+			let claimMember = runner(conf);
 			if(claimMember == true){
 				console.log(`Id ${ element.asset_id}, HARVEST WORKED`);
 			}
