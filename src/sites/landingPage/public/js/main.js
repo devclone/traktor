@@ -132,7 +132,7 @@ async function getPlots(cropconf){
 	const crops = await askDB_byId('farmersworld', 'crops', wax.userAccount, '2', 'name');
 	let customHTML = '';
 	crops.forEach(async (element, index) => {
-		const cropName = cropconf.rows.find(elem => elem.template_id === element.template_id);
+		const cropName = await cropconf.rows.find(elem => elem.template_id === element.template_id);
 		customHTML += `<div>
 			<div>${cropName.name}</div>
 			<div>${element.times_claimed}/42</div>
@@ -174,9 +174,8 @@ async function getMember(memberConf, resources){
 	let	customHTML = '';
 	member.forEach(async element =>{
 		const memberName = await memberConf.rows.find(e => e.template_id === element.template_id);
-		console.log(memberName);
 		customHTML += `
-					<div>${memberName.template_name}</div>;
+					<div>${memberName.name}</div>;
 					<div>${fromSec(element.next_availability - Date.now()/1000)}</div>
 				</div><br>`;
     
