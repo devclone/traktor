@@ -133,6 +133,7 @@ async function getPlots(cropconf, resources){
 	let customHTML = '';
 	console.log(crops);
 	crops.forEach(async (element, index) => {
+		console.log(element);
 		const cropName = await cropconf.rows.find(elem => elem.template_id === element.template_id);
 		customHTML += `<div>
 			<div>${cropName.name}</div>
@@ -175,7 +176,6 @@ async function getMember(memberConf, resources){
 	let	customHTML = '';
 	member.forEach(async element =>{
 		const memberName = memberConf.rows.find(e => e.template_id === element.template_id);
-		console.log(memberName);
 		customHTML += `
 					<div>${memberName.name}</div>
 					<div>${fromSec(element.next_availability - Date.now()/1000)}</div>
@@ -220,7 +220,6 @@ async function getTools(toolconf, gold, resources){
 	});
 	tools.forEach(async element => {
 		const toolName = toolconf.rows.find(elem => elem.template_id === element.template_id);
-		console.log(toolName.durability_consumed);
 		customHTML += `
 					<div style="w"><b>${toolName.template_name}</b></div>
 					<div>${element.current_durability}/${element.durability}</div>
